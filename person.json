@@ -1,0 +1,8 @@
+{
+    "name": "John Doe",
+    "age": 30,
+    "city": "New York",
+    "email": "john.doe@example.com",
+    "active": true,
+    "hobbies": ["reading", "swimming"]
+}
