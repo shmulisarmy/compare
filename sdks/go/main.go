@@ -6,9 +6,28 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os/exec"
 )
 
+func to_terminal_safe_json_string(v any) string {
+	b, _ := json.Marshal(v)
+	return string(b)
+}
+
 func Compare(expected, actual any, url string) (int, string, error) {
+	if info, err := exec.LookPath("compare"); err == nil && info != "" {
+		// Use local compare binary
+
+		terminal_command := fmt.Sprintf("compare -expected='%s' -actual='%s'", to_terminal_safe_json_string(expected), to_terminal_safe_json_string(actual))
+		cmd := exec.Command("sh", "-c", terminal_command)
+		output, err := cmd.CombinedOutput()
+		if err != nil {
+			return 1, string(output), err
+		}
+		return 0, string(output), nil
+	} else {
+		println("compare is not a command")
+	}
 	if url == "" {
 		url = "http://localhost:8080/compare"
 	}
