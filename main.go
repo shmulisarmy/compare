@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -102,12 +103,21 @@ Plain text comparison tree with ANSI colors showing differences
 		} else {
 			fmt.Println("\n❌ Differences found")
 		}
-		os.Exit(1)
+
 	} else {
 		if useColor {
 			fmt.Printf("\n%s✅ Objects match%s\n", colorGreen, colorReset)
 		} else {
 			fmt.Println("\n✅ Objects match")
 		}
+	}
+
+	// Generate and print the URL
+	actualBytes, _ := json.Marshal(actual)
+	expectedBytes, _ := json.Marshal(expected)
+	url := create_url(actualBytes, expectedBytes)
+	fmt.Println(url)
+	if hasMismatch {
+		os.Exit(1)
 	}
 }

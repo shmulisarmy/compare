@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"net/url"
 	"os"
 	"reflect"
@@ -370,65 +369,16 @@ type CompareRequest struct {
 }
 
 // handleCompare handles the HTTP comparison endpoint
-func handleCompare(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		fmt.Fprintln(w, "Method not allowed")
-		return
+
+func create_url(actual, expected json.RawMessage) string {
+
+	actualURL := url.QueryEscape(string(actual))
+	expectedURL := url.QueryEscape(string(expected))
+	url := fmt.Sprintf("https://json-diff-pro-ae6c6454.base44.app/?expected=%s&actual=%s", expectedURL, actualURL)
+	short_url := func(site string, alias string) string {
+		return fmt.Sprintf("\u001B]8;;%s\u0007%s\u001B]8;;\u0007", site, alias)
 	}
-
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintln(w, "Failed to read request body")
-		return
-	}
-	defer r.Body.Close()
-
-	var req CompareRequest
-	if err := json.Unmarshal(body, &req); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintln(w, `api usage: GET /compare?actual={...}&expected={...}`)
-		return
-	}
-
-	var actual, expected interface{}
-	if err := json.Unmarshal(req.Actual, &actual); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintln(w, "Invalid 'actual' JSON")
-		return
-	}
-	if err := json.Unmarshal(req.Expected, &expected); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintln(w, "Invalid 'expected' JSON")
-		return
-	}
-
-	comparison := compareJSON(actual, expected)
-
-	// Print colored comparison tree to response
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-
-	fmt.Fprintln(w, "==== COMPARISON TREE ====")
-	printComparison(w, comparison, "", true, true)
-
-	hasMismatch := checkForMismatches(comparison)
-	if hasMismatch {
-		fmt.Fprintln(w, "\n❌ Differences found")
-	} else {
-		fmt.Fprintln(w, "\n✅ Objects match")
-	}
-	{
-
-		actualURL := url.QueryEscape(string(req.Actual))
-		expectedURL := url.QueryEscape(string(req.Expected))
-		url := fmt.Sprintf("https://json-diff-pro-ae6c6454.base44.app/?expected=%s&actual=%s", expectedURL, actualURL)
-		short_url := func(site string, alias string) string {
-			return fmt.Sprintf("\u001B]8;;%s\u0007%s\u001B]8;;\u0007", site, alias)
-		}
-		fmt.Fprintln(w, "interactive json viewer: "+short_url(url, "json-diff-pro"))
-	}
+	return "interactive json viewer: " + short_url(url, "json-diff-pro")
 }
 
 // checkForMismatches recursively checks if there are any mismatches
