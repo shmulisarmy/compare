@@ -374,7 +374,7 @@ func create_url(actual, expected json.RawMessage) string {
 
 	actualURL := url.QueryEscape(string(actual))
 	expectedURL := url.QueryEscape(string(expected))
-	url := fmt.Sprintf("https://json-diff-pro-ae6c6454.base44.app/?expected=%s&actual=%s", expectedURL, actualURL)
+	url := fmt.Sprintf("https://json-diff-pro-copy-56b52272.base44.app/?expected=%s&actual=%s", expectedURL, actualURL)
 	short_url := func(site string, alias string) string {
 		return fmt.Sprintf("\u001B]8;;%s\u0007%s\u001B]8;;\u0007", site, alias)
 	}
