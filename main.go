@@ -52,7 +52,7 @@ Plain text comparison tree with ANSI colors showing differences
 		addr := ":" + *portFlag
 		fmt.Printf("🚀 JSON Comparison Server\n")
 		fmt.Printf("   Listening on http://localhost%s\n", addr)
-		fmt.Printf("   POST /compare to compare JSON objects\n\n")
+		fmt.Printf("   Get /compare to compare JSON objects\n\n")
 		log.Fatal(http.ListenAndServe(addr, nil))
 		return
 	}
