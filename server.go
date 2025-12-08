@@ -28,6 +28,7 @@ func handleCompare(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, `api usage: GET /compare?actual={...}&expected={...}`)
 		return
 	}
+	fmt.Printf("got a request with %s and %s", req.Expected, req.Actual)
 
 	var actual, expected interface{}
 	if err := json.Unmarshal(req.Actual, &actual); err != nil {
