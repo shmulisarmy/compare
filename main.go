@@ -12,7 +12,7 @@ import (
 func main() {
 	actualFlag := flag.String("actual", "", "Actual JSON (string or file path)")
 	expectedFlag := flag.String("expected", "", "Expected JSON (string or file path)")
-	serverFlag := flag.Bool("server", false, "Run as HTTP server")
+	serverFlag := flag.Bool("server", true, "Run as HTTP server")
 	portFlag := flag.String("port", "8080", "Server port (only used with --server)")
 	noColorFlag := flag.Bool("no-color", false, "Disable colored output")
 
